@@ -1,5 +1,5 @@
 import type { CellValue, Player } from "@/types";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 interface StatusProps {
   player: Player;
@@ -10,10 +10,12 @@ interface StatusProps {
 export function Status({ player, winner, isDraw }: StatusProps) {
   if (winner) {
     return (
-      <View style="turn">
-        <Text>
+      <View style={styles.turn}>
+        <Text style={styles.turnText}>
           Гравець{" "}
-          <Text style={winner === "X" ? "x-mark" : "o-mark"}>{winner}</Text>{" "}
+          <Text style={winner === "X" ? styles.xMark : styles.oMark}>
+            {winner}
+          </Text>{" "}
           переміг!
         </Text>
       </View>
@@ -22,18 +24,52 @@ export function Status({ player, winner, isDraw }: StatusProps) {
 
   if (isDraw) {
     return (
-      <View style="turn">
-        <Text>Нічия!</Text>
+      <View style={styles.turn}>
+        <Text style={styles.turnText}>Нічия!</Text>
       </View>
     );
   }
 
   return (
-    <View style="turn">
-      <Text>
+    <View style={styles.turn}>
+      <Text style={styles.turnText}>
         Хід гравця{" "}
-        <Text style={player === "X" ? "x-mark" : "o-mark"}>{player}</Text>
+        <Text style={player === "X" ? styles.xMark : styles.oMark}>
+          {player}
+        </Text>
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  turn: {
+    marginBottom: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+    alignSelf: "center",
+  },
+
+  turnText: {
+    fontSize: 18,
+    color: "#34495e",
+    fontWeight: "500",
+  },
+
+  xMark: {
+    color: "#e74c3c",
+    fontWeight: "500",
+  },
+
+  oMark: {
+    color: "#3498db",
+    fontWeight: "500",
+  },
+});
