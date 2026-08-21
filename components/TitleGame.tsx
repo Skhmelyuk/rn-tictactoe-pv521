@@ -1,7 +1,20 @@
+import { Text, StyleSheet } from "react-native";
+
 interface TitleGameProps {
-  title: string;
+    title: string;
 }
 
 export function TitleGame({ title }: TitleGameProps) {
-  return <h1 className="title">{title}</h1>;
+    return <Text style={styles.title}>{title}</Text>;
 }
+
+const styles = StyleSheet.create({
+    title: {
+        color: "#2c3e50",
+        marginBottom: 20,
+        fontSize: 24,
+        textTransform: "uppercase",
+        letterSpacing: 2,
+        fontWeight: "bold",
+    }
+})
