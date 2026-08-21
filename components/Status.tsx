@@ -1,4 +1,5 @@
-import type { CellValue, Player } from "../types";
+import type { CellValue, Player } from "@/types";
+import { Text, View } from "react-native";
 
 interface StatusProps {
   player: Player;
@@ -9,22 +10,30 @@ interface StatusProps {
 export function Status({ player, winner, isDraw }: StatusProps) {
   if (winner) {
     return (
-      <div className="turn">
-        Гравець{" "}
-        <span className={winner === "X" ? "x-mark" : "o-mark"}>{winner}</span>{" "}
-        переміг!
-      </div>
+      <View style="turn">
+        <Text>
+          Гравець{" "}
+          <Text style={winner === "X" ? "x-mark" : "o-mark"}>{winner}</Text>{" "}
+          переміг!
+        </Text>
+      </View>
     );
   }
 
   if (isDraw) {
-    return <div className="turn">Нічия!</div>;
+    return (
+      <View style="turn">
+        <Text>Нічия!</Text>
+      </View>
+    );
   }
 
   return (
-    <div className="turn">
-      Хід гравця{" "}
-      <span className={player === "X" ? "x-mark" : "o-mark"}>{player}</span>
-    </div>
+    <View style="turn">
+      <Text>
+        Хід гравця{" "}
+        <Text style={player === "X" ? "x-mark" : "o-mark"}>{player}</Text>
+      </Text>
+    </View>
   );
 }
