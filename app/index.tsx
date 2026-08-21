@@ -4,6 +4,8 @@ import { Status } from "@/components/Status";
 import { TitleGame } from "@/components/TitleGame";
 import type { BoardState, Player } from "@/types";
 import { checkWinner } from "@/utils";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const [cells, setCells] = useState<BoardState>(Array(9).fill(null));
@@ -33,22 +35,68 @@ export default function Index() {
   };
 
   return (
-    <div className="game">
-      <TitleGame title="Гра хрестики нулики" />
-      <Status player={currentPlayer} winner={winner} isDraw={isDraw} />
-      <div className="board">
-        {cells.map((cell, index) => (
-          <Cell
-            value={cell}
-            key={index}
-            onCellClick={() => handleCellClick(index)}
-            isWinner={winnerCombination.includes(index)}
-          />
-        ))}
-      </div>
-      <button className="reset" onClick={handleReset}>
-        Скинути гру
-      </button>
-    </div>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.game}>
+        <TitleGame title="Гра хрестики нулики" />
+        <Status player={currentPlayer} winner={winner} isDraw={isDraw} />
+        <View style={styles.board}>
+          {cells.map((cell, index) => (
+            <Cell
+              value={cell}
+              key={index}
+              onCellClick={() => handleCellClick(index)}
+              isWinner={winnerCombination.includes(index)}
+            />
+          ))}
+        </View>
+        <TouchableOpacity
+          style={styles.reset}
+          onPress={handleReset}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.resetText}>Скинути гру</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f0f2f5",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  game: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  board: {
+    gap: 10,
+    width: 300,
+    marginVertical: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+
+  reset: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#007bff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  resetText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
