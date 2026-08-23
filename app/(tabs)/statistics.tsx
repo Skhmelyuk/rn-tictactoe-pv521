@@ -1,5 +1,8 @@
 import { useGame } from "@/context/GameContext";
+import useTheme from "@/context/ThemeContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Switch } from "react-native";
+
 import {
   Alert,
   ScrollView,
@@ -12,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function StatisticsScreen() {
   const { stats, resetStats } = useGame();
+  const { isDarkMode, colors, toggleTheme } = useTheme();
 
   const handleResetStats = () => {
     if (stats.totalGames === 0) {
@@ -36,6 +40,31 @@ export default function StatisticsScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Статистика ігор</Text>
+
+        {/* Блок перемикання теми */}
+        <View
+          style={[
+            styles.themeCard,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+          ]}
+        >
+          <View style={styles.themeInfo}>
+            <MaterialIcons
+              name={isDarkMode ? "dark-mode" : "light-mode"}
+              size={24}
+              color={isDarkMode ? "#FBBF24" : "#F59E0B"}
+            />
+            <Text style={[styles.themeText, { color: colors.text }]}>
+              {isDarkMode ? "Темна тема" : "Світла тема"}
+            </Text>
+          </View>
+          <Switch
+            value={isDarkMode}
+            onValueChange={toggleTheme}
+            trackColor={{ false: "#D1D5DB", true: colors.primary }}
+            thumbColor="#FFFFFF"
+          />
+        </View>
 
         <View style={styles.grid}>
           {/* Картка 1: Загальна кількість */}
@@ -168,6 +197,31 @@ const styles = StyleSheet.create({
   resetText: {
     color: "#ffffff",
     fontSize: 15,
+    fontWeight: "600",
+  },
+  themeCard: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  themeInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  themeText: {
+    fontSize: 16,
     fontWeight: "600",
   },
 });
