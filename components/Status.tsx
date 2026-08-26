@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeContext";
 import type { CellValue, Player } from "@/types";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -8,12 +9,30 @@ interface StatusProps {
 }
 
 export function Status({ player, winner, isDraw }: StatusProps) {
+  const { colors, isDarkMode } = useTheme();
+
   if (winner) {
     return (
-      <View style={styles.turn}>
-        <Text style={styles.turnText}>
-          Гравець{" "}
-          <Text style={winner === "X" ? styles.xMark : styles.oMark}>
+      <View
+        style={[
+          styles.turn,
+          {
+            backgroundColor: colors.surface,
+            borderColor: colors.winnerBorder,
+            borderWidth: 2,
+            shadowColor: colors.cardShadow,
+            shadowOpacity: isDarkMode ? 0.35 : 0.1,
+          },
+        ]}
+      >
+        <Text style={[styles.turnText, { color: colors.text }]}>
+          🎉 Гравець{" "}
+          <Text
+            style={[
+              styles.playerBadge,
+              { color: winner === "X" ? colors.xMark : colors.oMark },
+            ]}
+          >
             {winner}
           </Text>{" "}
           переміг!
@@ -24,17 +43,46 @@ export function Status({ player, winner, isDraw }: StatusProps) {
 
   if (isDraw) {
     return (
-      <View style={styles.turn}>
-        <Text style={styles.turnText}>Нічия!</Text>
+      <View
+        style={[
+          styles.turn,
+          {
+            backgroundColor: colors.surface,
+            borderColor: "#F59E0B",
+            borderWidth: 2,
+            shadowColor: colors.cardShadow,
+            shadowOpacity: isDarkMode ? 0.35 : 0.1,
+          },
+        ]}
+      >
+        <Text style={[styles.turnText, { color: colors.text }]}>
+          🤝 Нічия!
+        </Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.turn}>
-      <Text style={styles.turnText}>
-        Хід гравця{" "}
-        <Text style={player === "X" ? styles.xMark : styles.oMark}>
+    <View
+      style={[
+        styles.turn,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderWidth: 1,
+          shadowColor: colors.cardShadow,
+          shadowOpacity: isDarkMode ? 0.25 : 0.08,
+        },
+      ]}
+    >
+      <Text style={[styles.turnText, { color: colors.text }]}>
+        Хід гравця:{" "}
+        <Text
+          style={[
+            styles.playerBadge,
+            { color: player === "X" ? colors.xMark : colors.oMark },
+          ]}
+        >
           {player}
         </Text>
       </Text>
@@ -44,32 +92,26 @@ export function Status({ player, winner, isDraw }: StatusProps) {
 
 const styles = StyleSheet.create({
   turn: {
-    marginBottom: 20,
+    marginBottom: 24,
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 15,
-    shadowOffset: { width: 0, height: 2 },
+    paddingHorizontal: 22,
+    borderRadius: 24,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 8,
     elevation: 3,
     alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
-
   turnText: {
-    fontSize: 18,
-    color: "#34495e",
-    fontWeight: "500",
+    fontSize: 17,
+    fontWeight: "600",
+    textAlign: "center",
   },
-
-  xMark: {
-    color: "#e74c3c",
-    fontWeight: "500",
-  },
-
-  oMark: {
-    color: "#3498db",
-    fontWeight: "500",
+  playerBadge: {
+    fontSize: 20,
+    fontWeight: "900",
   },
 });
+

@@ -1,75 +1,71 @@
+import { useTheme } from "@/context/ThemeContext";
 import type { CellValue } from "@/types";
 import { Pressable, StyleSheet, Text } from "react-native";
 
 interface CellProps {
-    value: CellValue;
-    onCellClick: () => void;
-    isWinner: boolean;
+  value: CellValue;
+  onCellClick: () => void;
+  isWinner: boolean;
 }
 
 export function Cell({ value, onCellClick, isWinner }: CellProps) {
-    return (
-        <Pressable
-            style={({ pressed }) => [
-                styles.cell,
-                isWinner && styles.winner,
-                pressed && styles.pressed,
-            ]}
-            onPress={onCellClick}
-        >
-            <Text
-                style={[
-                    styles.cellText,
-                    value === "X" && styles.xMark,
-                    value === "O" && styles.oMark,
-                    isWinner && styles.winnerText,
-                ]}
-            >
-                {value}
-            </Text>
-        </Pressable>
-    );
+  const { colors, isDarkMode } = useTheme();
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.cell,
+        {
+          backgroundColor: isWinner
+            ? colors.winnerBg
+            : pressed
+            ? colors.surfaceHighlight
+            : colors.surface,
+          borderColor: isWinner ? colors.winnerBorder : colors.border,
+          borderWidth: isWinner ? 2.5 : 1,
+          shadowColor: colors.cardShadow,
+          shadowOpacity: isDarkMode ? 0.3 : 0.08,
+        },
+        pressed && styles.pressed,
+      ]}
+      onPress={onCellClick}
+    >
+      <Text
+        style={[
+          styles.cellText,
+          {
+            color: isWinner
+              ? "#FFFFFF"
+              : value === "X"
+              ? colors.xMark
+              : colors.oMark,
+          },
+        ]}
+      >
+        {value}
+      </Text>
+    </Pressable>
+  );
 }
 
 const styles = StyleSheet.create({
-    xMark: {
-        color: "#e74c3c",
-        fontWeight: "500",
-    },
-
-    oMark: {
-        color: "#3498db",
-        fontWeight: "500",
-    },
-
-    cell: {
-        backgroundColor: "white",
-        borderRadius: 8,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-        width: 90,
-        height: 90,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    cellText: {
-        fontSize: 40,
-        fontWeight: "bold",
-    },
-
-    winner: {
-        backgroundColor: "#2ecc71",
-        borderColor: "#27ae60",
-        borderWidth: 2,
-    },
-    winnerText: {
-        color: "white",
-    },
-    pressed: {
-        opacity: 0.85,
-        transform: [{ scale: 0.96 }],
-    },
+  cell: {
+    borderRadius: 16,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 3,
+    width: 92,
+    height: 92,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cellText: {
+    fontSize: 44,
+    fontWeight: "900",
+  },
+  pressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.94 }],
+  },
 });
+

@@ -1,14 +1,14 @@
 import { GameProvider } from "@/context/GameContext";
-import useTheme, { ThemeProvider } from "@/context/ThemeContext";
+import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 function RootNavigate() {
-  const { isDarkMode, colors } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <>
-      <StatusBar style={isDarkMode ? "light" : "dark"} />
+      <StatusBar style={colors.statusBarStyle} />
       <Stack
         screenOptions={{
           headerShown: false,

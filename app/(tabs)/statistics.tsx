@@ -1,12 +1,11 @@
 import { useGame } from "@/context/GameContext";
-import useTheme from "@/context/ThemeContext";
+import { useTheme } from "@/context/ThemeContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Switch } from "react-native";
-
 import {
   Alert,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -36,16 +35,25 @@ export default function StatisticsScreen() {
     }
   };
 
+  const isResetDisabled = stats.totalGames === 0;
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Статистика ігор</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Статистика ігор
+        </Text>
 
         {/* Блок перемикання теми */}
         <View
           style={[
             styles.themeCard,
-            { backgroundColor: colors.surface, borderColor: colors.border },
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+              shadowColor: colors.cardShadow,
+              shadowOpacity: isDarkMode ? 0.25 : 0.06,
+            },
           ]}
         >
           <View style={styles.themeInfo}>
@@ -54,55 +62,169 @@ export default function StatisticsScreen() {
               size={24}
               color={isDarkMode ? "#FBBF24" : "#F59E0B"}
             />
-            <Text style={[styles.themeText, { color: colors.text }]}>
-              {isDarkMode ? "Темна тема" : "Світла тема"}
-            </Text>
+            <View>
+              <Text style={[styles.themeText, { color: colors.text }]}>
+                {isDarkMode ? "Темна тема" : "Світла тема"}
+              </Text>
+              <Text style={[styles.themeSubText, { color: colors.textMuted }]}>
+                {isDarkMode ? "Активний нічний режим" : "Активний денний режим"}
+              </Text>
+            </View>
           </View>
           <Switch
             value={isDarkMode}
             onValueChange={toggleTheme}
-            trackColor={{ false: "#D1D5DB", true: colors.primary }}
+            trackColor={{
+              false: isDarkMode ? "#334155" : "#D1D5DB",
+              true: colors.primary,
+            }}
             thumbColor="#FFFFFF"
           />
         </View>
 
         <View style={styles.grid}>
           {/* Картка 1: Загальна кількість */}
-          <View style={[styles.card, styles.cardTotal]}>
-            <MaterialIcons name="videogame-asset" size={32} color="#4b5563" />
-            <Text style={styles.cardNumber}>{stats.totalGames}</Text>
-            <Text style={styles.cardLabel}>Зіграно партій</Text>
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                borderTopColor: colors.primary,
+                shadowColor: colors.cardShadow,
+                shadowOpacity: isDarkMode ? 0.3 : 0.08,
+              },
+            ]}
+          >
+            <MaterialIcons
+              name="videogame-asset"
+              size={32}
+              color={colors.primary}
+            />
+            <Text style={[styles.cardNumber, { color: colors.text }]}>
+              {stats.totalGames}
+            </Text>
+            <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
+              Зіграно партій
+            </Text>
           </View>
 
           {/* Картка 2: Перемоги X */}
-          <View style={[styles.card, styles.cardX]}>
-            <Text style={styles.playerBadgeX}>X</Text>
-            <Text style={styles.cardNumber}>{stats.winsX}</Text>
-            <Text style={styles.cardLabel}>Перемог X</Text>
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                borderTopColor: colors.xMark,
+                shadowColor: colors.cardShadow,
+                shadowOpacity: isDarkMode ? 0.3 : 0.08,
+              },
+            ]}
+          >
+            <Text style={[styles.playerBadgeX, { color: colors.xMark }]}>
+              X
+            </Text>
+            <Text style={[styles.cardNumber, { color: colors.text }]}>
+              {stats.winsX}
+            </Text>
+            <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
+              Перемог X
+            </Text>
           </View>
 
           {/* Картка 3: Перемоги O */}
-          <View style={[styles.card, styles.cardO]}>
-            <Text style={styles.playerBadgeO}>O</Text>
-            <Text style={styles.cardNumber}>{stats.winsO}</Text>
-            <Text style={styles.cardLabel}>Перемог O</Text>
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                borderTopColor: colors.oMark,
+                shadowColor: colors.cardShadow,
+                shadowOpacity: isDarkMode ? 0.3 : 0.08,
+              },
+            ]}
+          >
+            <Text style={[styles.playerBadgeO, { color: colors.oMark }]}>
+              O
+            </Text>
+            <Text style={[styles.cardNumber, { color: colors.text }]}>
+              {stats.winsO}
+            </Text>
+            <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
+              Перемог O
+            </Text>
           </View>
 
           {/* Картка 4: Нічиї */}
-          <View style={[styles.card, styles.cardDraw]}>
-            <MaterialIcons name="handshake" size={32} color="#f59e0b" />
-            <Text style={styles.cardNumber}>{stats.draws}</Text>
-            <Text style={styles.cardLabel}>Нічиїх</Text>
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                borderTopColor: "#F59E0B",
+                shadowColor: colors.cardShadow,
+                shadowOpacity: isDarkMode ? 0.3 : 0.08,
+              },
+            ]}
+          >
+            <MaterialIcons name="handshake" size={32} color="#F59E0B" />
+            <Text style={[styles.cardNumber, { color: colors.text }]}>
+              {stats.draws}
+            </Text>
+            <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
+              Нічиїх
+            </Text>
           </View>
         </View>
 
         <TouchableOpacity
-          style={styles.resetButton}
+          style={[
+            styles.resetButton,
+            {
+              backgroundColor: isResetDisabled
+                ? isDarkMode
+                  ? "#1E293B"
+                  : "#E2E8F0"
+                : isDarkMode
+                ? "#991B1B"
+                : "#DC2626",
+              shadowColor: colors.cardShadow,
+              shadowOpacity: isResetDisabled ? 0 : isDarkMode ? 0.35 : 0.15,
+              opacity: isResetDisabled ? 0.6 : 1,
+            },
+          ]}
           onPress={handleResetStats}
           activeOpacity={0.8}
+          disabled={isResetDisabled}
         >
-          <MaterialIcons name="delete-outline" size={20} color="#ffffff" />
-          <Text style={styles.resetText}>Очистити статистику</Text>
+          <MaterialIcons
+            name="delete-outline"
+            size={20}
+            color={
+              isResetDisabled
+                ? isDarkMode
+                  ? colors.textMuted
+                  : "#9CA3AF"
+                : "#FFFFFF"
+            }
+          />
+          <Text
+            style={[
+              styles.resetText,
+              {
+                color: isResetDisabled
+                  ? isDarkMode
+                    ? colors.textMuted
+                    : "#9CA3AF"
+                  : "#FFFFFF",
+              },
+            ]}
+          >
+            Очистити статистику
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -112,7 +234,6 @@ export default function StatisticsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f2f5",
   },
   content: {
     padding: 20,
@@ -120,8 +241,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "700",
-    color: "#1f2937",
+    fontWeight: "800",
+    letterSpacing: 0.5,
     marginBottom: 24,
     marginTop: 8,
   },
@@ -135,69 +256,55 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "47%",
-    backgroundColor: "#ffffff",
-    padding: 16,
-    borderRadius: 12,
+    padding: 18,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderTopWidth: 4,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cardTotal: {
-    borderTopWidth: 4,
-    borderTopColor: "#4b5563",
-  },
-  cardX: {
-    borderTopWidth: 4,
-    borderTopColor: "#ef4444",
-  },
-  cardO: {
-    borderTopWidth: 4,
-    borderTopColor: "#3b82f6",
-  },
-  cardDraw: {
-    borderTopWidth: 4,
-    borderTopColor: "#f59e0b",
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 3,
   },
   playerBadgeX: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "900",
-    color: "#ef4444",
+    height: 32,
+    lineHeight: 32,
+    textAlign: "center",
   },
   playerBadgeO: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "900",
-    color: "#3b82f6",
+    height: 32,
+    lineHeight: 32,
+    textAlign: "center",
   },
   cardNumber: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "800",
-    color: "#111827",
-    marginVertical: 4,
+    marginVertical: 6,
   },
   cardLabel: {
     fontSize: 13,
-    color: "#6b7280",
-    fontWeight: "500",
+    fontWeight: "600",
   },
   resetButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "#dc2626",
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 10,
+    borderRadius: 14,
+    marginTop: 8,
     width: "100%",
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
   },
   resetText: {
-    color: "#ffffff",
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 16,
+    fontWeight: "700",
   },
   themeCard: {
     width: "100%",
@@ -205,23 +312,27 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingHorizontal: 18,
+    borderRadius: 16,
     borderWidth: 1,
-    marginBottom: 20,
+    marginBottom: 24,
     elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   themeInfo: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 14,
   },
   themeText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
+  },
+  themeSubText: {
+    fontSize: 12,
+    fontWeight: "500",
+    marginTop: 2,
   },
 });
+

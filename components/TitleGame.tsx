@@ -1,21 +1,31 @@
-import { Text, StyleSheet } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { useTheme } from "@/context/ThemeContext";
+import { StyleSheet, Text, View } from "react-native";
 
 interface TitleGameProps {
   title: string;
 }
 
 export function TitleGame({ title }: TitleGameProps) {
-  return <Text style={styles.title}>{title}</Text>;
+  const { colors } = useTheme();
+
+  return (
+    <View style={styles.container}>
+      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: "#2c3e50",
+  container: {
     marginBottom: 20,
+    alignItems: "center",
+  },
+  title: {
     fontSize: 24,
+    fontWeight: "800",
+    letterSpacing: 1.5,
     textTransform: "uppercase",
-    letterSpacing: 2,
-    fontWeight: "bold",
+    textAlign: "center",
   },
 });
+
