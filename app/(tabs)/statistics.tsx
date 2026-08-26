@@ -1,6 +1,7 @@
-import { useGame } from "@/context/GameContext";
 import { useTheme } from "@/context/ThemeContext";
+import { api } from "@/convex/_generated/api";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useMutation, useQuery } from "convex/react";
 import {
   Alert,
   ScrollView,
@@ -13,11 +14,20 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function StatisticsScreen() {
-  const { stats, resetStats } = useGame();
   const { isDarkMode, colors, toggleTheme } = useTheme();
 
+  const stats = useQuery(api.stats.getStats);
+  const resetStats = useMutation(api.stats.resetStats);
+
+  const currentStats = stats ?? {
+    totalGames: 0,
+    winsX: 0,
+    winsO: 0,
+    draws: 0,
+  };
+
   const handleResetStats = () => {
-    if (stats.totalGames === 0) {
+    if (currentStats.totalGames === 0) {
       Alert.alert("Повідомлення:", "Статистика вже порожня!");
     } else {
       Alert.alert(
@@ -35,7 +45,7 @@ export default function StatisticsScreen() {
     }
   };
 
-  const isResetDisabled = stats.totalGames === 0;
+  const isResetDisabled = currentStats.totalGames === 0;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
@@ -102,7 +112,7 @@ export default function StatisticsScreen() {
               color={colors.primary}
             />
             <Text style={[styles.cardNumber, { color: colors.text }]}>
-              {stats.totalGames}
+              {currentStats.totalGames}
             </Text>
             <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
               Зіграно партій
@@ -126,7 +136,7 @@ export default function StatisticsScreen() {
               X
             </Text>
             <Text style={[styles.cardNumber, { color: colors.text }]}>
-              {stats.winsX}
+              {currentStats.winsX}
             </Text>
             <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
               Перемог X
@@ -150,7 +160,7 @@ export default function StatisticsScreen() {
               O
             </Text>
             <Text style={[styles.cardNumber, { color: colors.text }]}>
-              {stats.winsO}
+              {currentStats.winsO}
             </Text>
             <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
               Перемог O
@@ -172,7 +182,7 @@ export default function StatisticsScreen() {
           >
             <MaterialIcons name="handshake" size={32} color="#F59E0B" />
             <Text style={[styles.cardNumber, { color: colors.text }]}>
-              {stats.draws}
+              {currentStats.draws}
             </Text>
             <Text style={[styles.cardLabel, { color: colors.textMuted }]}>
               Нічиїх
@@ -189,8 +199,8 @@ export default function StatisticsScreen() {
                   ? "#1E293B"
                   : "#E2E8F0"
                 : isDarkMode
-                ? "#991B1B"
-                : "#DC2626",
+                  ? "#991B1B"
+                  : "#DC2626",
               shadowColor: colors.cardShadow,
               shadowOpacity: isResetDisabled ? 0 : isDarkMode ? 0.35 : 0.15,
               opacity: isResetDisabled ? 0.6 : 1,
@@ -335,4 +345,3 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
-
