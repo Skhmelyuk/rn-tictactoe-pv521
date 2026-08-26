@@ -48,3 +48,23 @@ export const recordGameResult = mutation({
     }
   },
 });
+
+export const resetStats = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const allStats = await ctx.db.query("stats").collect();
+    for (const item of allStats) {
+      await ctx.db.delete(item._id);
+    }
+    await ctx.db.insert("stats", {
+      totalGames: 0,
+      winsX: 0,
+      winsO: 0,
+      draws: 0,
+      updatedAt: Date.now(),
+    });
+    return {
+      success: true,
+    };
+  },
+});
