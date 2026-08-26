@@ -1,7 +1,11 @@
-import { GameProvider } from "@/context/GameContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+  unsavedChangesWarning: false,
+});
 
 function RootNavigate() {
   const { colors } = useTheme();
@@ -31,9 +35,9 @@ function RootNavigate() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <GameProvider>
+      <ConvexProvider client={convex}>
         <RootNavigate />
-      </GameProvider>
+      </ConvexProvider>
     </ThemeProvider>
   );
 }

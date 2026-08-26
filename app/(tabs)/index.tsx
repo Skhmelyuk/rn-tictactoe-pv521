@@ -1,11 +1,12 @@
 import { Cell } from "@/components/Cell";
 import { Status } from "@/components/Status";
 import { TitleGame } from "@/components/TitleGame";
-import { useGame } from "@/context/GameContext";
 import { useTheme } from "@/context/ThemeContext";
+import { api } from "@/convex/_generated/api";
 import type { BoardState, Player } from "@/types";
 import { checkWinner } from "@/utils";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useMutation } from "convex/react";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,9 +14,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Index() {
   const [cells, setCells] = useState<BoardState>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
-  const { recordGameResult } = useGame();
   const { colors, isDarkMode } = useTheme();
   const gameRecordRef = useRef(false);
+
+  const recordGameResult = useMutation(api.stats.recordGameResult);
 
   const winnerResult = checkWinner(cells);
   const winner = winnerResult ? winnerResult.winner : null;
@@ -24,10 +26,10 @@ export default function Index() {
 
   useEffect(() => {
     if (winner && !gameRecordRef.current) {
-      recordGameResult(winner);
+      recordGameResult({ result: winner });
       gameRecordRef.current = true;
     } else if (isDraw && !gameRecordRef.current) {
-      recordGameResult("DRAW");
+      recordGameResult({ result: "DRAW" });
       gameRecordRef.current = true;
     }
   }, [winner, isDraw, recordGameResult]);
@@ -143,4 +145,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
