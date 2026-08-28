@@ -17,7 +17,7 @@ export default function Index() {
   const { colors, isDarkMode } = useTheme();
   const gameRecordRef = useRef(false);
 
-  const recordGameResult = useMutation(api.stats.recordGameResult);
+  const recordGame = useMutation(api.games.recordGame); // useMutation(api.stats.recordGameResult);
 
   const winnerResult = checkWinner(cells);
   const winner = winnerResult ? winnerResult.winner : null;
@@ -26,13 +26,13 @@ export default function Index() {
 
   useEffect(() => {
     if (winner && !gameRecordRef.current) {
-      recordGameResult({ result: winner });
+      recordGame({ winner: winner, board: cells, winningCombination: winnerCombination});
       gameRecordRef.current = true;
     } else if (isDraw && !gameRecordRef.current) {
-      recordGameResult({ result: "DRAW" });
+      recordGame({ winner: "DRAW", board: cells });
       gameRecordRef.current = true;
     }
-  }, [winner, isDraw, recordGameResult]);
+  }, [winner, isDraw, cells, winnerCombination, recordGame]);
 
   const handleCellClick = (index: number): void => {
     if (cells[index] || winner || isDraw) {
