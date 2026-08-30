@@ -1,11 +1,20 @@
+import { Platform } from "react-native";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexReactClient } from "convex/react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import * as SecureStore from "expo-secure-store";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
+
+const secureStorage = {
+  getItem: SecureStore.getItemAsync,
+  setItem: SecureStore.setItemAsync,
+  removeItem: SecureStore.deleteItemAsync,
+};
 
 function RootNavigate() {
   const { colors } = useTheme();
@@ -35,9 +44,16 @@ function RootNavigate() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <ConvexProvider client={convex}>
+      <ConvexAuthProvider
+        client={convex}
+        storage={
+          Platform.OS === "android" || Platform.OS === "ios"
+            ? secureStorage
+            : undefined
+        }
+      >
         <RootNavigate />
-      </ConvexProvider>
+      </ConvexAuthProvider>
     </ThemeProvider>
   );
 }
