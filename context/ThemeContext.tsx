@@ -24,6 +24,9 @@ export interface ThemeColors {
   statusBarStyle: "light" | "dark";
 }
 
+// Тип схеми кольорів для фабрик стилів
+export type ColorScheme = ThemeColors;
+
 // Світла тема
 export const lightColors: ThemeColors = {
   bg: "#F0F2F5",
