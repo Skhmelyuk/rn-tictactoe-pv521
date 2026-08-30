@@ -1,10 +1,10 @@
-import { Platform } from "react-native";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
-import { ConvexReactClient } from "convex/react";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { Authenticated, AuthLoading, ConvexReactClient, Unauthenticated } from "convex/react";
+import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, Platform, View } from "react-native";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -22,21 +22,46 @@ function RootNavigate() {
   return (
     <>
       <StatusBar style={colors.statusBarStyle} />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
+      <AuthLoading>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
             backgroundColor: colors.bg,
-          },
-        }}
-      >
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
           }}
-        />
-      </Stack>
+        >
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </AuthLoading>
+      <Unauthenticated>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.bg },
+          }}
+        >
+          <Stack.Screen name="sign-in" />
+          <Stack.Screen name="sign-up" />
+        </Stack>
+      </Unauthenticated>
+      <Authenticated>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: colors.bg,
+            },
+          }}
+        >
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </Authenticated>
     </>
   );
 }
