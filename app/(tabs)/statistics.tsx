@@ -12,6 +12,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useRouter } from "expo-router";
 
 export default function StatisticsScreen() {
   const { isDarkMode, colors, toggleTheme } = useTheme();
@@ -19,6 +21,24 @@ export default function StatisticsScreen() {
 
   const stats = useQuery(api.stats.getStats);
   const resetStats = useMutation(api.stats.resetStats);
+
+  const { signOut } = useAuthActions();
+  const router = useRouter();
+  const user = useQuery(api.users.currentUser);
+
+  const handleSignOut = () => {
+  Alert.alert("Вихід з акаунта", "Ви впевнені, що хочете вийти з гри?", [
+    { text: "Скасувати", style: "cancel" },
+    {
+      text: "Вийти",
+      style: "destructive",
+      onPress: async () => {
+        await signOut();
+        router.replace("/sign-in");
+      },
+    },
+  ]);
+};
 
   const currentStats = stats ?? {
     totalGames: 0,
@@ -53,6 +73,22 @@ export default function StatisticsScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Статистика ігор</Text>
+
+        <View >
+  <View >
+    <MaterialIcons name="sports-esports" size={28} color="#FFFFFF" />
+  </View>
+  <View>
+    <Text >{user?.name ?? "Гравець"}</Text>
+    <Text >{user?.email ?? ""}</Text>
+  </View>
+  <TouchableOpacity
+    onPress={handleSignOut}
+    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+  >
+    <MaterialIcons name="logout" size={22} color={colors.textMuted} />
+  </TouchableOpacity>
+</View>
 
         {/* Блок перемикання теми */}
         <View style={styles.themeCard}>
