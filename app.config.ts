@@ -31,7 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: dynamicConfig.name,
     slug: PROJECT_SLUG,
-    version: "1.0.0",
+    version: "1.0.2",
     orientation: "portrait",
     icon: dynamicConfig.icon,
     scheme: dynamicConfig.scheme,

@@ -27,18 +27,18 @@ export default function StatisticsScreen() {
   const user = useQuery(api.users.currentUser);
 
   const handleSignOut = () => {
-  Alert.alert("Вихід з акаунта", "Ви впевнені, що хочете вийти з гри?", [
-    { text: "Скасувати", style: "cancel" },
-    {
-      text: "Вийти",
-      style: "destructive",
-      onPress: async () => {
-        await signOut();
-        router.replace("/sign-in");
+    Alert.alert("Вихід з акаунта", "Ви впевнені, що хочете вийти з гри?", [
+      { text: "Скасувати", style: "cancel" },
+      {
+        text: "Вийти",
+        style: "destructive",
+        onPress: async () => {
+          await signOut();
+          router.replace("/sign-in");
+        },
       },
-    },
-  ]);
-};
+    ]);
+  };
 
   const currentStats = stats ?? {
     totalGames: 0,
@@ -63,7 +63,7 @@ export default function StatisticsScreen() {
           style: "destructive",
           onPress: () => resetStats(),
         },
-      ]
+      ],
     );
   };
 
@@ -74,21 +74,30 @@ export default function StatisticsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Статистика ігор</Text>
 
-        <View >
-  <View >
-    <MaterialIcons name="sports-esports" size={28} color="#FFFFFF" />
-  </View>
-  <View>
-    <Text >{user?.name ?? "Гравець"}</Text>
-    <Text >{user?.email ?? ""}</Text>
-  </View>
-  <TouchableOpacity
-    onPress={handleSignOut}
-    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-  >
-    <MaterialIcons name="logout" size={22} color={colors.textMuted} />
-  </TouchableOpacity>
-</View>
+        {/* Картка користувача */}
+        <View style={styles.userCard}>
+          <View style={styles.avatarContainer}>
+            <MaterialIcons name="sports-esports" size={26} color="#FFFFFF" />
+          </View>
+          <View style={styles.userInfo}>
+            <Text style={styles.userName} numberOfLines={1}>
+              {user?.name ?? "Гравець"}
+            </Text>
+            {user?.email ? (
+              <Text style={styles.userEmail} numberOfLines={1}>
+                {user.email}
+              </Text>
+            ) : null}
+          </View>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={handleSignOut}
+            activeOpacity={0.7}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <MaterialIcons name="logout" size={20} color={colors.xMark} />
+          </TouchableOpacity>
+        </View>
 
         {/* Блок перемикання теми */}
         <View style={styles.themeCard}>
@@ -195,9 +204,59 @@ const createStyles = (colors: ColorScheme, isDarkMode: boolean) =>
       fontSize: 24,
       fontWeight: "800",
       letterSpacing: 0.5,
-      marginBottom: 24,
+      marginBottom: 20,
       marginTop: 8,
       color: colors.text,
+    },
+    userCard: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      marginBottom: 16,
+      elevation: 2,
+      shadowColor: colors.cardShadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDarkMode ? 0.25 : 0.06,
+      shadowRadius: 4,
+    },
+    avatarContainer: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: colors.primary,
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 14,
+    },
+    userInfo: {
+      flex: 1,
+      justifyContent: "center",
+    },
+    userName: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: colors.text,
+    },
+    userEmail: {
+      fontSize: 12,
+      fontWeight: "500",
+      color: colors.textMuted,
+      marginTop: 2,
+    },
+    logoutButton: {
+      padding: 8,
+      borderRadius: 10,
+      backgroundColor: isDarkMode
+        ? "rgba(248, 113, 113, 0.12)"
+        : "rgba(231, 76, 60, 0.08)",
+      justifyContent: "center",
+      alignItems: "center",
     },
     themeCard: {
       width: "100%",
